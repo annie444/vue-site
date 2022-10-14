@@ -1,51 +1,61 @@
 <template>
-  <div id="tiles">
-    <div class="tile" @resize="reloadGrid()" @click="animateClick()"></div>
-  </div>
+  <div id="tiles" @resize="createGrid()"></div>
 </template>
 
 <script>
-import { isExpressionWrapper } from '@babel/types';
-import anime from 'animejs';
+import anime from "animejs";
 
 export default {
   name: "home",
   data() {
     return {
-
-    }
+      columns: 0,
+      rows: 0,
+      count: -1,
+      colors: [
+        "rgb(229, 57, 53)",
+        "rgb(253, 216, 53)",
+        "rgb(244, 81, 30)",
+        "rgb(76, 175, 80)",
+        "rgb(33, 150, 243)",
+        "rgb(156, 39, 176)"
+      ]
+    };
   },
   methods: {
-    createGrid() {
-      const createTile = index => {
-        const tile = document.createElement("div");
-        tile.classList.add("tile");
-        return tile;
-      }
+    animateClick(index) {
+      count = count + 1;
 
-      const createTiles = quantity => {
-        Array.from(Array(quantity)).map((tile, index) => {
-          wrapper.appendChild(createTile(index));
+      anime({
+        targets: ".tile",
+        backgroundColor: colors[ count % (colors.length - 1)],
+        delay: anime.stagger(50, {
+          grid: [columns, rows],
+          from: index
         })
-      }
-
-      wrapper.innerHTML = "";
+      });
+    },
+    createTile(index) {
+      const tile = document.createElement("div");
+      tile.classList.add("tile");
+      tile.onClick = (e) => animateClick(index);
+      return tile;
+    },
+    createTiles(quantity) {
+      Array.from(Array(quantity)).map((tile, index) => {
+        this.appendChild(createTile(index));
+      })
+    },
+    createGrid() {
+      this.innerHTML = "";
 
       let columns = Math.floor(document.body.clientWidth / 50);
       let rows = Math.floor(document.body.clientHeight / 50);
 
-      wrapper.style.setProperty("--columns", columns);
-      wrapper.style.setProperty("--rows", rows);
+      this.style.setProperty("--columns", columns);
+      this.style.setProperty("--rows", rows);
 
       createTiles(columns * rows);
-    },
-    animateClick() {
-      const count = count + 1
-
-      anime({
-        targets: ".tile",
-        backgroundColor: colors[ count % (colors.length - 1)]
-      })
     },
   },
 };
@@ -53,17 +63,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  #tiles{
-    height: 100vh;
-    width: 100vh;
+#tiles{
+  height: 100vh;
+  width: 100vh;
 
-    display: grid;
+  display: grid;
 
-    grid-template-rows: repeat(var(--rows), 1fr);
-    grid-template-columns: repeat(var(--columns), 1fr);
-  }
-
-  .tile {
-    outline: 1px solid white;
-  }
+  grid-template-rows: repeat(var(--rows), 1fr);
+  grid-template-columns: repeat(var(--columns), 1fr);
+}
 </style>
