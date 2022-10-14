@@ -1,36 +1,51 @@
 <template>
   <div id="tiles">
-    <div class="tile" @resize="createGrid()"></div>
+    <div class="tile" @resize="reloadGrid()" @click="animateClick()"></div>
   </div>
 </template>
 
 <script>
 import { isExpressionWrapper } from '@babel/types';
+import anime from 'animejs';
 
 export default {
   name: "home",
-  props: {
-    methods: {
-      createGrid() {
-        const createTile = index => {
-          const tile = document.createElement("div");
-          tile.classList.add("tile");
-          return tile;
-        }
+  data() {
+    return {
 
-        const createTiles = quantity => {
-          Array.from(Array(quantity)).map((tile, index) => {
-            wrapper.appendChild(createTile(index));
-          })
-        }
+    }
+  },
+  methods: {
+    createGrid() {
+      const createTile = index => {
+        const tile = document.createElement("div");
+        tile.classList.add("tile");
+        return tile;
+      }
 
-        wrapper.innerHTML = "";
+      const createTiles = quantity => {
+        Array.from(Array(quantity)).map((tile, index) => {
+          wrapper.appendChild(createTile(index));
+        })
+      }
 
-        let columns = Math.floor(document.body.clientWidth / 50);
-        let rows = Math.floor(document.body.clientHeight / 50);
+      wrapper.innerHTML = "";
 
-        createTiles(columns * rows);
-      },
+      let columns = Math.floor(document.body.clientWidth / 50);
+      let rows = Math.floor(document.body.clientHeight / 50);
+
+      wrapper.style.setProperty("--columns", columns);
+      wrapper.style.setProperty("--rows", rows);
+
+      createTiles(columns * rows);
+    },
+    animateClick() {
+      const count = count + 1
+
+      anime({
+        targets: ".tile",
+        backgroundColor: colors[ count % (colors.length - 1)]
+      })
     },
   },
 };
@@ -43,6 +58,9 @@ export default {
     width: 100vh;
 
     display: grid;
+
+    grid-template-rows: repeat(var(--rows), 1fr);
+    grid-template-columns: repeat(var(--columns), 1fr);
   }
 
   .tile {

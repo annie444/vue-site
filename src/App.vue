@@ -1,9 +1,9 @@
 <template>
-  <div class="tile"></div>
+  <div id="app"></div>
 </template>
 
 <script>
-import HelloWorld from "./components/home.vue";
+import home from "./components/home.vue";
 
 export default {
   name: "App",
